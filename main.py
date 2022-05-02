@@ -2,60 +2,72 @@
 from tkinter import *
 from tkinter import messagebox
 
+root = Tk()
+root.title('Tic Tac Toe Game')
+WIDTH = 12
+HEIGHT = 4
 
-class Root:
+
+class App:
 
 	def __init__(self):
-		self.root = Tk()
-		self.title = self.root.title('Tic Tac Toe Game')
-
-	def draw(self):
-		self.root.bind('<Escape>', lambda x:self.root.quit())
-		self.root.mainloop()
-
-
-class App(Root):	
-
-	def __init__(self, WIDTH=12, HEIGHT=4):
-		super().__init__()
-		self.frame = Frame(self.root)
-		self.end_frame = Frame(self.root)
-		self.end_title = Label(self.end_frame, text='End of Game')
 		self.clicked = False
 		self.x_won = False
 		self.o_won = False
 
-		self.b1 = Button(self.frame, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b1))
-		self.b2 = Button(self.frame, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b2))
-		self.b3 = Button(self.frame, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b3))
+		self.b1 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b1))
+		self.b2 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b2))
+		self.b3 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b3))
 
-		self.b4 = Button(self.frame, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b4))
-		self.b5 = Button(self.frame, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b5))
-		self.b6 = Button(self.frame, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b6))
+		self.b4 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b4))
+		self.b5 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b5))
+		self.b6 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b6))
 
-		self.b7 = Button(self.frame, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b7))
-		self.b8 = Button(self.frame, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b8))
-		self.b9 = Button(self.frame, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b9))
+		self.b7 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b7))
+		self.b8 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b8))
+		self.b9 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b9))
+
+		# don't use function if you want to start a new game, this will draw a blank grid when new game start
+		self.b1.grid(row=0, column=0)
+		self.b2.grid(row=0, column=1)
+		self.b3.grid(row=0, column=2)
+
+		self.b4.grid(row=1, column=0)
+		self.b5.grid(row=1, column=1)
+		self.b6.grid(row=1, column=2)
+
+		self.b7.grid(row=2, column=0)
+		self.b8.grid(row=2, column=1)
+		self.b9.grid(row=2, column=2)
 
 	def click(self, b):
 		if b['text'] == '' and self.clicked == False:
 			b['text'] = 'X'
 			self.clicked = True
-			self.x_win()
+			self.x_win()			
 			if self.x_won:
+				self.disabled_btn()
 				messagebox.showinfo(title='Tic Tac Toe Game', message='X WON')
-				self.frame.destroy()
-				self.end()
-
+				msg = messagebox.askyesno(title='X WON', message='Do You Want To Start New Game?')
+				if msg == True:
+					# start new game
+					app = App()
+				elif msg == False:
+					root.quit()
 		elif b['text'] == '' and self.clicked == True:
 			b['text'] = 'O'
 			self.clicked = False
-			self.o_win()
+			self.o_win()			
 			if self.o_won:
+				self.disabled_btn()
 				messagebox.showinfo(title='Tic Tac Toe Game', message='O WON')
-				self.frame.destroy()
-				self.end()
-
+				msg = messagebox.askyesno(title='O WON', message='Do You Want To Start New Game?')
+				if msg == True:
+					# start new game
+					app = App()
+				else:
+					root.quit()
+				
 	def x_win(self):
 		if self.b1['text'] == 'X' and self.b2['text'] == 'X' and self.b3['text'] == 'X':
 			self.b1['bg'] = 'red'
@@ -140,17 +152,20 @@ class App(Root):
 			self.b9['bg'] = 'blue'
 			self.o_won = True
 
-	def end(self):
-		self.root.geometry('300x350')
-		self.end_frame.pack()
-		self.end_title.pack(pady=150)
+	def disabled_btn(self):
+		self.b1['state'] = DISABLED
+		self.b2['state'] = DISABLED
+		self.b3['state'] = DISABLED
+		self.b4['state'] = DISABLED
+		self.b5['state'] = DISABLED
+		self.b6['state'] = DISABLED
+		self.b7['state'] = DISABLED
+		self.b8['state'] = DISABLED
+		self.b9['state'] = DISABLED
 
-
-
-	def draw_app(self):
-		
-		self.frame.pack()
-
+	def draw(self):
+		# if you put this in a function, every time you start a new game, you won't be able to start new grid.
+		# it will draw the old game on screen
 		self.b1.grid(row=0, column=0)
 		self.b2.grid(row=0, column=1)
 		self.b3.grid(row=0, column=2)
@@ -163,13 +178,9 @@ class App(Root):
 		self.b8.grid(row=2, column=1)
 		self.b9.grid(row=2, column=2)
 
-		self.draw()
-
-		
-def main():
-	app.draw_app()
 
 app = App()
 
-if __name__ == '__main__':
-	main()
+root.bind('<Escape>', lambda x:root.quit())
+root.mainloop()
+
