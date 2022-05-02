@@ -14,6 +14,7 @@ class App:
 		self.clicked = False
 		self.x_won = False
 		self.o_won = False
+		self.count = 0
 
 		self.b1 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b1))
 		self.b2 = Button(root, text='', width=WIDTH, height=HEIGHT, command=lambda: self.click(self.b2))
@@ -44,6 +45,7 @@ class App:
 		if b['text'] == '' and self.clicked == False:
 			b['text'] = 'X'
 			self.clicked = True
+			self.count += 1
 			self.x_win()			
 			if self.x_won:
 				self.disabled_btn()
@@ -57,6 +59,7 @@ class App:
 		elif b['text'] == '' and self.clicked == True:
 			b['text'] = 'O'
 			self.clicked = False
+			self.count += 1			
 			self.o_win()			
 			if self.o_won:
 				self.disabled_btn()
@@ -109,6 +112,7 @@ class App:
 			self.b5['bg'] = 'red'
 			self.b9['bg'] = 'red'
 			self.x_won = True
+		self.tie()
 
 	def o_win(self):
 		if self.b1['text'] == 'O' and self.b2['text'] == 'O' and self.b3['text'] == 'O':
@@ -151,6 +155,7 @@ class App:
 			self.b5['bg'] = 'blue'
 			self.b9['bg'] = 'blue'
 			self.o_won = True
+		self.tie()
 
 	def disabled_btn(self):
 		self.b1['state'] = DISABLED
@@ -165,7 +170,7 @@ class App:
 
 	def draw(self):
 		# if you put this in a function, every time you start a new game, you won't be able to start new grid.
-		# it will draw the old game on screen
+		# it will draw the old grid on screen
 		self.b1.grid(row=0, column=0)
 		self.b2.grid(row=0, column=1)
 		self.b3.grid(row=0, column=2)
@@ -178,9 +183,19 @@ class App:
 		self.b8.grid(row=2, column=1)
 		self.b9.grid(row=2, column=2)
 
+	def tie(self):
+		if self.count == 9 and self.x_won == False and self.o_won == False:
+			messagebox.showinfo(title='Tic Tac Toe Game', message='This is a DRAW')
+			self.disabled_btn()
+			msg = messagebox.askyesno(title='O WON', message='Do You Want To Start New Game?')
+			if msg == True:
+				# start new game
+				app = App()
+			else:
+				root.quit()
+
 
 app = App()
 
 root.bind('<Escape>', lambda x:root.quit())
 root.mainloop()
-
